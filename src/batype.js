@@ -35,7 +35,7 @@ var Textfield = {
   'init': function(ctx) {
   
     self.ctx = ctx;
-    self.text = 'k';
+    self.text = '';
   
     document.onkeydown = Textfield.key_up;   
   
