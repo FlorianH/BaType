@@ -18,9 +18,24 @@ var Config = {
 
 
 var Wordlist = [
-  "HASE",
-  "AUTO",
-  "KATZE"
+  "Mary",
+  "had",
+  "little",
+  "lamb",
+  "whose",
+  "fleece",
+  "was",
+  "white",
+  "as",
+  "snow",
+  "everywhere",
+  "that",
+  "went",
+  "and",
+  "the",
+  "sure",
+  "to",
+  "go"
 ]
 
 var Key = {
