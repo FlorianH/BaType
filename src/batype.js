@@ -47,7 +47,7 @@ var Textfield = {
     ctx.fillRect (0, Config.playingfield_height(), Config.width(), Config.height());
 
     ctx.fillStyle = "rgb(255, 255, 255)";
-    ctx.font = "24px 'Arial'";
+    ctx.font = "24px bold 'Arial'";
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText(text+'_', Config.width()/2, Config.playingfield_height() + Config.text_field_height()/2 );
