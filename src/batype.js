@@ -142,8 +142,8 @@ var PlayingField = {
     
     self.bats.push({
       'caption': caption.toUpperCase(),
-      'x': Math.random()* (640 - bat_image.width),
-      'y': Math.random()* (400 - bat_image.height)
+      'x': Math.random()* (Config.width() - bat_image.width),
+      'y': Math.random()* (Config.playingfield_height() - bat_image.height)
     });
     
   },//add_bat()
@@ -177,6 +177,8 @@ var BaType = {
       self.canvas = document.getElementById("canvas");
       self.ctx = self.canvas.getContext("2d");
       
+      self.canvas.width = window.innerWidth;
+      self.canvas.height = window.innerHeight;
       
       Textfield.init(self.ctx);
       PlayingField.init(self.ctx);
