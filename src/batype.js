@@ -37,7 +37,7 @@ var Textfield = {
     self.ctx = ctx;
     self.text = 'k';
   
-    document.onkeyup = Textfield.key_up;   
+    document.onkeydown = Textfield.key_up;   
   
   }, //init()
   
@@ -65,12 +65,16 @@ var Textfield = {
         
       case Key.Backspace:
         text = text.slice(0,-1);
+        window.event.cancelBubble = true;
+        window.event.returnValue = false;
         break;
         
       default:
         text += String.fromCharCode(event.keyCode);
         
     }//switch
+  
+    return false;
   
   }//key_up()
 
