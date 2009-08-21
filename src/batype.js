@@ -10,7 +10,7 @@ var Config = {
   
   'height': function() { return document.getElementById("canvas").height; },
   
-  'text_field_height': function() { return (document.getElementById("canvas").height/6); },
+  'text_field_height': function() { return (document.getElementById("canvas").height/8); },
   
   'playingfield_height': function() { return (Config.height() - Config.text_field_height()); }
   
@@ -47,7 +47,7 @@ var Textfield = {
     ctx.fillRect (0, Config.playingfield_height(), Config.width(), Config.height());
 
     ctx.fillStyle = "rgb(255, 255, 255)";
-    ctx.font = "24px bold 'Arial'";
+    ctx.font = "24px 'Arial'";
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText(text+'_', Config.width()/2, Config.playingfield_height() + Config.text_field_height()/2 );
@@ -61,12 +61,14 @@ var Textfield = {
       case Key.Enter:
         BaType.check_word(text);
         text = '';
+        event.cancelBubble = true;
+        event.returnValue = false;
         break;
         
       case Key.Backspace:
         text = text.slice(0,-1);
-        window.event.cancelBubble = true;
-        window.event.returnValue = false;
+        event.cancelBubble = true;
+        event.returnValue = false;
         break;
         
       default:
@@ -99,6 +101,11 @@ var PlayingField = {
   'draw': function() {
 
     PlayingField.draw_background();
+    
+    
+    if (self.bats.length >= 10) {
+      BaType.running = false;
+    }
     
     //draw the bats
     for(i=0; i < self.bats.length; i++)
@@ -135,6 +142,29 @@ var PlayingField = {
   },//draw_bat()
 
 
+  'draw_fin': function() {
+  
+    ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    ctx.fillRect(0, 0, Config.width(), Config.height());
+
+
+    if (Scores.score > 2)
+      var fin_text = 'You got ' + Scores.score + ' bats.';
+    else if (Scores.score == 1)
+      var fin_text = 'You got 1 bat.';
+    else
+      var fin_text = 'You got no bats. Try again!';
+
+    ctx.fillStyle = "rgb(255, 255, 255)";
+    ctx.font = "24px 'Arial'";
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+
+    ctx.fillText(fin_text, Config.width()/2, Config.height()/2 );
+  
+  },//draw_fin()
+
+
   'add_bat': function(caption) {
     
     bats.push({
@@ -148,15 +178,44 @@ var PlayingField = {
   'remove_bat': function(caption) {
   
     for(i=0; i < bats.length; i++)
-      if (bats[i].caption == caption)
+      if (bats[i].caption == caption) {
         bats.splice(i,1);
+        Scores.add();
+      }
   
   }//remove_bat()
 
 }//PlayingField
 
 
+var Scores = {
 
+  'init': function(ctx) {
+    
+    self.ctx = ctx;
+    Scores.score = 0;    
+  
+  },//init()
+   
+  'draw': function() {
+  
+    if (Scores.score > 0) {
+
+      ctx.fillStyle = "rgb(255, 255, 255)";
+      ctx.font = "18px 'Arial'";
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'right';
+      ctx.fillText(Scores.score + " Bats", Config.width()-30, 25 );
+
+    }//if
+  
+  },//draw()
+  
+  'add': function() {
+    Scores.score++;
+  }
+
+}
 
 
 
@@ -169,12 +228,15 @@ var BaType = {
       self.canvas = document.getElementById("canvas");
       BaType.ctx = canvas.getContext("2d");
       
+      BaType.running = true;
+      
       //maximize in window
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       
       Textfield.init(BaType.ctx);
       PlayingField.init(BaType.ctx);
+      Scores.init(BaType.ctx);
       
       setInterval( BaType.draw, 1000/Config.fps );
       setInterval( BaType.add_bat, 1000/Config.bats_per_second );
@@ -190,13 +252,21 @@ var BaType = {
   
   
   'draw': function() {
-
+      
       //clear canvas
       BaType.ctx.clearRect(0,0,canvas.width,canvas.height); 
 
-      Textfield.draw();
-      PlayingField.draw();
+      if (!BaType.running) {
+      
+        PlayingField.draw_fin();
+      
+      } else {
 
+        Textfield.draw();
+        PlayingField.draw();
+        Scores.draw();
+      }
+      
     },//draw()
     
     'add_bat': function() {
