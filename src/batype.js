@@ -32,14 +32,10 @@ var Key = {
 
 var Textfield = {
   
-  'ctx': null, //the canvas context
-  
-  'text': null, //The text that the user entered
-
   'init': function(ctx) {
   
     self.ctx = ctx;
-    self.text = '';
+    self.text = 'k';
   
     document.onkeyup = Textfield.key_up;   
   
@@ -47,14 +43,14 @@ var Textfield = {
   
   'draw': function() {
 
-    self.ctx.fillStyle = "rgb(9,21,45)";
-    self.ctx.fillRect (0, Config.playingfield_height(), Config.width(), Config.height());
+    ctx.fillStyle = "rgb(9,21,45)";
+    ctx.fillRect (0, Config.playingfield_height(), Config.width(), Config.height());
 
-    self.ctx.fillStyle = "rgb(255, 255, 255)";
-    self.ctx.font = "24px 'Arial'";
-    self.ctx.textBaseline = 'middle';
-    self.ctx.textAlign = 'center';
-    self.ctx.fillText(self.text+'_', Config.width()/2, Config.playingfield_height() + Config.text_field_height()/2 );
+    ctx.fillStyle = "rgb(255, 255, 255)";
+    ctx.font = "24px 'Arial'";
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillText(text+'_', Config.width()/2, Config.playingfield_height() + Config.text_field_height()/2 );
     
   }, //draw()
 
@@ -63,16 +59,17 @@ var Textfield = {
     switch(event.keyCode) {
     
       case Key.Enter:
-        BaType.check_word(self.text);
-        self.text = '';
+        BaType.check_word(text);
+        text = '';
         break;
         
       case Key.Backspace:
-        self.text = self.text.slice(0,-1);
+        text = text.slice(0,-1);
         break;
         
       default:
-        self.text += String.fromCharCode(event.keyCode);
+        text += String.fromCharCode(event.keyCode);
+        
     }//switch
   
   }//key_up()
@@ -83,10 +80,6 @@ var Textfield = {
 
 
 var PlayingField = {
-
-  'bats': null,
-  
-  'bat_image': null,
 
   'init': function(ctx){
   
@@ -112,35 +105,35 @@ var PlayingField = {
   
   'draw_background': function() {
   
-    var objGradient = self.ctx.createRadialGradient(Config.width()/2, (Config.height()-Config.text_field_height()), 50, Config.width()/2, (Config.height()-Config.text_field_height()), Config.width()/2);
+    var objGradient = ctx.createRadialGradient(Config.width()/2, (Config.height()-Config.text_field_height()), 50, Config.width()/2, Config.playingfield_height(), Config.width()/2);
     objGradient.addColorStop(0, '#1C2F5C');
     objGradient.addColorStop(1, '#09152D');
-    self.ctx.fillStyle = objGradient;
-    self.ctx.fillRect(0, 0, Config.width(), (Config.height()-Config.text_field_height()));
+    ctx.fillStyle = objGradient;
+    ctx.fillRect(0, 0, Config.width(), (Config.height()-Config.text_field_height()));
     
   },//draw_background()
   
   'draw_bat': function(bat) {
 
       //draw the bat image      
-      self.ctx.drawImage(self.bat_image,bat.x, bat.y); 
+      ctx.drawImage(bat_image,bat.x, bat.y); 
 
       //draw the bat's text
-      self.ctx.font = "18px 'Arial'";
-      self.ctx.textAlign = 'center';
+      ctx.font = "18px 'Arial'";
+      ctx.textAlign = 'center';
       
-      self.ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-      self.ctx.fillText(bat.caption, 1 + bat.x + bat_image.width/2, 1 + bat.y + bat_image.height);
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillText(bat.caption, 1 + bat.x + bat_image.width/2, 1 + bat.y + bat_image.height);
       
-      self.ctx.fillStyle = "rgb(255, 255, 255)";
-      self.ctx.fillText(bat.caption, bat.x + bat_image.width/2, bat.y + bat_image.height);
+      ctx.fillStyle = "rgb(255, 255, 255)";
+      ctx.fillText(bat.caption, bat.x + bat_image.width/2, bat.y + bat_image.height);
   
   },//draw_bat()
 
 
   'add_bat': function(caption) {
     
-    self.bats.push({
+    bats.push({
       'caption': caption.toUpperCase(),
       'x': Math.random()* (Config.width() - bat_image.width),
       'y': Math.random()* (Config.playingfield_height() - bat_image.height)
@@ -150,9 +143,9 @@ var PlayingField = {
   
   'remove_bat': function(caption) {
   
-    for(i=0; i < self.bats.length; i++)
-      if (self.bats[i].caption == caption)
-        self.bats.splice(i,1);
+    for(i=0; i < bats.length; i++)
+      if (bats[i].caption == caption)
+        bats.splice(i,1);
   
   }//remove_bat()
 
@@ -167,22 +160,17 @@ var PlayingField = {
 
 var BaType = {
 
-  'canvas': null,
-
-  'ctx': null, //the canvas context
-
-
   'init': function() {
   
       self.canvas = document.getElementById("canvas");
-      self.ctx = self.canvas.getContext("2d");
+      BaType.ctx = canvas.getContext("2d");
       
-      self.canvas.width = window.innerWidth;
-      self.canvas.height = window.innerHeight;
+      //maximize in window
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       
-      Textfield.init(self.ctx);
-      PlayingField.init(self.ctx);
-      
+      Textfield.init(BaType.ctx);
+      PlayingField.init(BaType.ctx);
       
       setInterval( BaType.draw, 1000/Config.fps );
       setInterval( BaType.add_bat, 1000/Config.bats_per_second );
@@ -192,15 +180,15 @@ var BaType = {
   
   'check_word': function(word) {
 
-    console.log("Das Wort:" + word);
     PlayingField.remove_bat(word);
   
   },//check_word()
   
+  
   'draw': function() {
 
       //clear canvas
-      self.ctx.clearRect(0,0,self.canvas.width,self.canvas.height); 
+      BaType.ctx.clearRect(0,0,canvas.width,canvas.height); 
 
       Textfield.draw();
       PlayingField.draw();
@@ -210,12 +198,9 @@ var BaType = {
     'add_bat': function() {
     
       var index = Math.floor( Math.random() * Wordlist.length );
-    
-      console.log("ADDED: " +  Wordlist[index] );
-    
       PlayingField.add_bat( Wordlist[index] );
     
     }//add_bat()
 
-}
 
+}//BaType
