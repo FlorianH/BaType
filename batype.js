@@ -1,5 +1,5 @@
 /*
-* ByType is a small game based on canvas that helps you to learn
+* BaType is a small game based on canvas that helps you to learn
 * typing faster. It is more a proof of concept.
 * 
 * Copyright (C) 2009 Florian Herlings (florianherlings.de)
