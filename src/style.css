@@ -1,0 +1,19 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #444;
+}
+
+
+
+
+#canvas {
+  background: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -240px 0 0 -320px;
+}
