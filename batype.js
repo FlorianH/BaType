@@ -1,4 +1,11 @@
 /*
+*  ____       _____
+* | __ )  __ |_   _|   _ _ __   ___
+* |  _ \ / _` || || | | | '_ \ / _ \
+* | |_) | (_| || || |_| | |_) |  __/
+* |____/ \__,_||_| \__, | .__/ \___|
+*                  |___/|_|
+* 
 * BaType is a small game based on canvas that helps you to learn
 * typing faster. It is more a proof of concept.
 * 
